@@ -46,8 +46,8 @@ void GameBoard::slide(Direction direction) {
         for(int i = 0; i < GameBoardSize; i++){
             for(int j = GameBoardSize-1, k = j; ~j; j--){
                 if(board[i][j]){
-                    board[i][k] = board[i][j];
-                    k--;
+                    board[i][k--] = board[i][j];
+                    if(j != k) board[i][j] = 0;
                 }
             }
         }
@@ -56,8 +56,8 @@ void GameBoard::slide(Direction direction) {
         for(int i = 0; i < GameBoardSize; i++){
             for(int j = 0, k = j; j < GameBoardSize; j++){
                 if(board[i][j]){
-                    board[i][k] = board[i][j];
-                    k++;
+                    board[i][k++] = board[i][j];
+                    if(j != k) board[i][j] = 0;
                 }
             }
         }
@@ -66,8 +66,8 @@ void GameBoard::slide(Direction direction) {
         for(int j = 0; j < GameBoardSize; j++){
             for(int i = 0, k = i; i < GameBoardSize; i++){
                 if(board[i][j]){
-                    board[k][j] = board[i][j];
-                    k++;
+                    board[k++][j] = board[i][j];
+                    if(i != k) board[i][j] = 0;
                 }
             }
         }
@@ -76,8 +76,8 @@ void GameBoard::slide(Direction direction) {
         for(int j = 0; j < GameBoardSize; j++){
             for(int i = GameBoardSize-1 , k = i; ~i; i--){
                 if(board[i][j]){
-                    board[k][j] = board[i][j];
-                    k--;
+                    board[k--][j] = board[i][j];
+                    if(i != k) board[i][j] = 0;
                 }
             }
         }
@@ -97,6 +97,7 @@ int GameBoard::merge(Direction direction) {
                 else{
                     board[i][--k] = board[i][j];
                 }
+                if(j != k) board[i][j] = 0;
             }
         }
     }
@@ -110,6 +111,7 @@ int GameBoard::merge(Direction direction) {
                 else{
                     board[i][++k] = board[i][j];
                 }
+                if(j != k) board[i][j] = 0;
             }
         }
     }
@@ -123,6 +125,7 @@ int GameBoard::merge(Direction direction) {
                 else{
                     board[--k][j] = board[i][j];
                 }
+                if(i != k) board[i][j] = 0;
             }
         }
     }
@@ -136,6 +139,7 @@ int GameBoard::merge(Direction direction) {
                 else{
                     board[++k][j] = board[i][j];
                 }
+                if(i != k) board[i][j] = 0;
             }
         }
     }
