@@ -20,20 +20,54 @@ int main(){
         }
     }
 
-    // Initialize the game
-    // TODO
+    game.initGame();
+    TerminalRender::render((game.getGameBoard(), 
+                            game.getScore(), game.getMoveCount());
 
     // Game loop
     while (true) {
-        // Handle user input
-        // TODO
+        InputType input = InputHandler::handleInput();
+        if(input == InputType::UNDO) {
+            gmae.undoLastMove();
+        }
+        else if(input == InputType::QUIT_GAME) {
+            break;
+        }
+        else{
+            Direction direction;
+            switch (input) {
+                case InputType::UP:
+                    direction = Direction::UP;
+                    break;
+                case InputType::DOWN:
+                    direction = Direction::DOWN;
+                    break;
+                case InputType::LEFT:
+                    direction = Direction::LEFT;
+                    break;
+                case InputType::RIGHT:
+                    direction = Direction::RIGHT;
+                    break;
+                default:
+                    std::cout << "Invalid input. Use arrow keys to move, U to undo, or Q to quit.\n";
+                    continue;
+            }
+            game.move(direction);
+        }
+        TerminalRender::render((game.getGameBoard(), 
+                                game.getScore(), game.getMoveCount());
 
-        // Check for win or lose conditions
-        // TODO
+        if(game.hasWon()) {
+            TerminalRender::displayWinMessage();
+            break;
+        }
+        else if(game.hasLost()) {
+            TerminalRender::displayLoseMessage();
+            break;
+        }
     }
 
-    // Display elapsed time
-    // TODO
+    TerminalRender::displayElapsedTime(game.getElapsedTime);
 
     return 0;
 }
