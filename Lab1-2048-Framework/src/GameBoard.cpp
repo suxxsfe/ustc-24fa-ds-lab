@@ -31,13 +31,16 @@ void GameBoard::reset() {
 
 int GameBoard::move(Direction direction) {
     slide(direction);
-    merge(direction);
+    int score = merge(direction);
+    
     int x, y;
     do{
         x = generator()%GameBoardSize;
         y = generator()%GameBoardSize;
     }while(board[x][y]);
     board[x][y] = (generator()%2+1)*2;
+
+    return score;
 }
 
 void GameBoard::slide(Direction direction) {
