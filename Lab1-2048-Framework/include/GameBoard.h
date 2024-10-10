@@ -27,6 +27,7 @@ private:
     std::mt19937 generator;
     int merge(Direction direction);
     void slide(Direction direction);
+    void generateNewTile();
 };
 
 #endif //INC_2048_GAMEBOARD_H
