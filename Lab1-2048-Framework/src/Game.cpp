@@ -12,11 +12,20 @@ void Game::initGame() {
 }
 
 void Game::updateGame(Direction direction) {
-    // TODO
+    historyGameBoards.push(gameBoard);
+    
+    score += gmaeBoard.move();
+    moveCount++;
 }
 
 void Game::undoLastMove() {
-    // TODO
+    if (historyGameBoards.size()){
+        gameBoard = historyGameBoards.top();
+        historyGameBoards.pop();
+    }
+    else{
+        gameBoard.reset();
+    }
 }
 
 bool Game::hasWon() const {
