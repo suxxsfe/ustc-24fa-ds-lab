@@ -11,6 +11,15 @@ GameBoard::GameBoard() {
 
 const int GameBoardSize = 4, InitTilesNum = 2, GameGoal = 2048;
 
+void GameBoard::generateNewTile(){
+    int x, y;
+    do{
+        x = generator()%GameBoardSize;
+        y = generator()%GameBoardSize;
+    }while(board[x][y]);
+    board[x][y] = (generator()%2+1)*2;
+}
+
 void GameBoard::reset() {    
     board.resize(GameBoardSize);
     for(int i = 0; i < GameBoardSize; i++){
@@ -20,26 +29,15 @@ void GameBoard::reset() {
         }
     }
 
-    for(int k = 0, x, y; k < InitTilesNum ; k++){
-        do{
-            x = generator()%GameBoardSize;
-            y = generator()%GameBoardSize;
-        }while(board[x][y]);
-        board[x][y] = (generator()%2+1)*2;
+    for(int k = 0; k < InitTilesNum ; k++){
+        generateNewTile();
     }
 }
 
 int GameBoard::move(Direction direction) {
     slide(direction);
     int score = merge(direction);
-    
-    int x, y;
-    do{
-        x = generator()%GameBoardSize;
-        y = generator()%GameBoardSize;
-    }while(board[x][y]);
-    board[x][y] = (generator()%2+1)*2;
-
+    generateNewTile();
     return score;
 }
 
