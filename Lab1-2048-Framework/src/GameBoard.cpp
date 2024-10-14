@@ -1,3 +1,4 @@
+
 #include "../include/GameBoard.h"
 #include <algorithm>
 #include <random>
@@ -12,6 +13,19 @@ GameBoard::GameBoard() {
 const int GameBoardSize = 4, InitTilesNum = 2, GameGoal = 2048;
 
 void GameBoard::generateNewTile(){
+	int full = 1;
+	for(int i = 0; i < GameBoardSize; i++){
+		for(int j = 0; j < GameBoardSize; j++){
+			if(!board[i][j]){
+				full = 0;
+				break;
+			}
+		}
+	}
+	if(full){
+		return;
+	}
+	
     int x, y;
     do{
         x = generator()%GameBoardSize;
@@ -42,42 +56,42 @@ int GameBoard::move(Direction direction) {
 }
 
 void GameBoard::slide(Direction direction) {
-    if(direction == Direction::UP){
+    if(direction == Direction::RIGHT){
         for(int i = 0; i < GameBoardSize; i++){
             for(int j = GameBoardSize-1, k = j; ~j; j--){
                 if(board[i][j]){
                     board[i][k--] = board[i][j];
-                    if(j != k) board[i][j] = 0;
-                }
-            }
-        }
-    }
-    else if(direction == Direction::DOWN){
-        for(int i = 0; i < GameBoardSize; i++){
-            for(int j = 0, k = j; j < GameBoardSize; j++){
-                if(board[i][j]){
-                    board[i][k++] = board[i][j];
-                    if(j != k) board[i][j] = 0;
+                    if(j != k+1) board[i][j] = 0;
                 }
             }
         }
     }
     else if(direction == Direction::LEFT){
-        for(int j = 0; j < GameBoardSize; j++){
-            for(int i = 0, k = i; i < GameBoardSize; i++){
+        for(int i = 0; i < GameBoardSize; i++){
+            for(int j = 0, k = j; j < GameBoardSize; j++){
                 if(board[i][j]){
-                    board[k++][j] = board[i][j];
-                    if(i != k) board[i][j] = 0;
+                    board[i][k++] = board[i][j];
+                    if(j != k-1) board[i][j] = 0;
                 }
             }
         }
     }
-    else if(direction == Direction::RIGHT){
+    else if(direction == Direction::DOWN){
+        for(int j = 0; j < GameBoardSize; j++){
+            for(int i = 0, k = i; i < GameBoardSize; i++){
+                if(board[i][j]){
+                    board[k++][j] = board[i][j];
+                    if(i != k-1) board[i][j] = 0;
+                }
+            }
+        }
+    }
+    else if(direction == Direction::UP){
         for(int j = 0; j < GameBoardSize; j++){
             for(int i = GameBoardSize-1 , k = i; ~i; i--){
                 if(board[i][j]){
                     board[k--][j] = board[i][j];
-                    if(i != k) board[i][j] = 0;
+                    if(i != k+1) board[i][j] = 0;
                 }
             }
         }
@@ -85,64 +99,75 @@ void GameBoard::slide(Direction direction) {
 }
 
 int GameBoard::merge(Direction direction) {
-    int moveScore = 0;
-    
-    if(direction == Direction::UP){
-        for(int i = 0; i < GameBoardSize; i++){
-            for(int j = GameBoardSize-2, k = j+1; ~j; j--){
-                if(!board[i][j]);
-                else if(board[i][j] == board[i][k]){
-                    board[i][k]<<=1;
-                }
-                else{
-                    board[i][--k] = board[i][j];
-                }
-                if(j != k) board[i][j] = 0;
-            }
-        }
-    }
-    else if(direction == Direction::DOWN){
-        for(int i = 0; i < GameBoardSize; i++){
-            for(int j = 1, k = j-1; j < GameBoardSize; j++){
-                if(!board[i][j]);
-                else if(board[i][j] == board[i][k]){
-                    board[i][k]<<=1;
-                }
-                else{
-                    board[i][++k] = board[i][j];
-                }
-                if(j != k) board[i][j] = 0;
-            }
-        }
-    }
-    else if(direction == Direction::RIGHT){
-        for(int j = 0; j < GameBoardSize; j++){
-            for(int i = GameBoardSize-2, k = i+1; ~i; i--){
-                if(!board[i][j]);
-                else if(board[i][j] == board[k][j]){
-                    board[k][j]<<=1;
-                }
-                else{
-                    board[--k][j] = board[i][j];
-                }
-                if(i != k) board[i][j] = 0;
-            }
-        }
-    }
-    else if(direction == Direction::LEFT){
-        for(int j = 0; j < GameBoardSize; j++){
-            for(int i = 1, k = i-1; i < GameBoardSize; i++){
-                if(!board[i][j]);
-                else if(board[i][j] == board[k][j]){
-                    board[k][j]<<=1;
-                }
-                else{
-                    board[++k][j] = board[i][j];
-                }
-                if(i != k) board[i][j] = 0;
-            }
-        }
-    }
+    int moveScore = 1, merged = 0;
+	
+    do{
+		merged = 0;
+		if(direction == Direction::RIGHT){
+			for(int i = 0; i < GameBoardSize; i++){
+				for(int j = GameBoardSize-2, k = j+1; ~j; j--){
+					if(!board[i][j]);
+					else if(board[i][j] == board[i][k]){
+						moveScore += board[i][k];
+						board[i][k]<<=1;
+						merged = 1;
+					}
+					else{
+						board[i][--k] = board[i][j];
+					}
+					if(j != k) board[i][j] = 0;
+				}
+			}
+		}
+		else if(direction == Direction::LEFT){
+			for(int i = 0; i < GameBoardSize; i++){
+				for(int j = 1, k = j-1; j < GameBoardSize; j++){
+					if(!board[i][j]);
+					else if(board[i][j] == board[i][k]){
+						moveScore += board[i][k];
+						board[i][k]<<=1;
+						merged = 1;
+					}
+					else{
+						board[i][++k] = board[i][j];
+					}
+					if(j != k) board[i][j] = 0;
+				}
+			}
+		}
+		else if(direction == Direction::UP){
+			for(int j = 0; j < GameBoardSize; j++){
+				for(int i = GameBoardSize-2, k = i+1; ~i; i--){
+					if(!board[i][j]);
+					else if(board[i][j] == board[k][j]){
+						moveScore += board[k][j];
+						board[k][j]<<=1;
+						merged = 1;
+					}
+					else{
+						board[--k][j] = board[i][j];
+					}
+					if(i != k) board[i][j] = 0;
+				}
+			}
+		}
+		else if(direction == Direction::DOWN){
+			for(int j = 0; j < GameBoardSize; j++){
+				for(int i = 1, k = i-1; i < GameBoardSize; i++){
+					if(!board[i][j]);
+					else if(board[i][j] == board[k][j]){
+						moveScore += board[k][j];
+						board[k][j]<<=1;
+						merged = 1;
+					}
+					else{
+						board[++k][j] = board[i][j];
+					}
+					if(i != k) board[i][j] = 0;
+				}
+			}
+		}
+	}while(merged);
 
     return moveScore;
 }
