@@ -14,7 +14,7 @@ void Game::initGame() {
 void Game::updateGame(Direction direction) {
     historyGameBoards.push(gameBoard);
     
-    score += gmaeBoard.move();
+    score += gameBoard.move(direction);
     moveCount++;
 }
 

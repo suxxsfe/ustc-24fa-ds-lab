@@ -21,14 +21,14 @@ int main(){
     }
 
     game.initGame();
-    TerminalRender::render((game.getGameBoard(), 
+    TerminalRender::render(game.getGameBoard(), 
                             game.getScore(), game.getMoveCount());
 
     // Game loop
     while (true) {
         InputType input = InputHandler::handleInput();
         if(input == InputType::UNDO) {
-            gmae.undoLastMove();
+            game.undoLastMove();
         }
         else if(input == InputType::QUIT_GAME) {
             break;
@@ -52,9 +52,9 @@ int main(){
                     std::cout << "Invalid input. Use arrow keys to move, U to undo, or Q to quit.\n";
                     continue;
             }
-            game.move(direction);
+            game.updateGame(direction);
         }
-        TerminalRender::render((game.getGameBoard(), 
+        TerminalRender::render(game.getGameBoard(), 
                                 game.getScore(), game.getMoveCount());
 
         if(game.hasWon()) {
@@ -67,7 +67,7 @@ int main(){
         }
     }
 
-    TerminalRender::displayElapsedTime(game.getElapsedTime);
+    TerminalRender::displayElapsedTime(game.getElapsedTime());
 
     return 0;
 }
